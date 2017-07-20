@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Simple User Authentication - Profile Page</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+    <div class="container">
+        {% if message.length > 0 %}
+        <div class="alert alert-danger">{{ message }}</div>
+        {% endif %}
+        <div class="page-header text-center">
+            <h1><span class="fa fa-anchor"></span> Profile Page</h1>
+            <a href="/logout" class="btn btn-default btn-sm">Logout</a>
+            <p><strong>USER_ID:</strong> {{ user.user_id }}</p>
+        </div>
+
+        <!-- LOCAL INFORMATION -->
+        <div class="row">
+            <h3><span class="glyphicon glyphicon-user"></span> Local</h3>
+            <p><strong>EMAIL/USERNAME:</strong> {{ user.email }}</p>
+            <p><strong>PASS/ID:</strong> {{ user.pass }}</p>
+            <a href="/connect/local" class="btn btn-primary">Connect Local</a>
+            <a href="/unlink/local" class="btn btn-danger">Unlink Local</a>
+        </div>
+        <hr>
+        <!-- JWT INFORMATION -->
+        <div class="row">
+            <h3><span class="glyphicon glyphicon-user"></span> JWT</h3>
+            <p><strong>EMAIL/USERNAME:</strong> {{ user.email }}</p>
+            <p><strong>PASS/ID:</strong> {{ user.pass }}</p>
+            <p><strong>TOKEN:</strong> {{ token }}</p>
+            <p><strong>SECRET:</strong> <span id="secretMsg"></span> </p>
+            <a href="javascript:getSecret()" class="btn btn-danger">Connect getSecret()</a>
+        </div>
+        <hr>
+        <!-- GITHUB INFORMATION -->
+        <div class="row">
+            <h3><span class="fa fa-github"></span> Github</h3>
+            <p><strong>EMAIL/USERNAME:</strong> {{ user.github_username }}</p>
+            <p><strong>PASS/ID:</strong> {{ user.github_id }}</p>
+            <p><strong>TOKEN:</strong> {{ user.github_token }}</p>
+            <a href="/connect/github" class="btn btn-primary">Connect Github</a>
+            <a href="/unlink/github" class="btn btn-danger">Unlink Github</a>
+        </div>
+        <hr>
+        <!-- GOOGLE INFORMATION -->
+        <div class="row">
+            <h3><span class="fa fa-google-plus"></span> Google</h3>
+            <p><strong>EMAIL/USERNAME:</strong> {{ user.google_email }}</p>
+            <p><strong>PASS/ID:</strong> {{ user.google_id }}</p>
+            <p><strong>TOKEN:</strong> {{ user.google_token }}</p>
+            <a href="/connect/google" class="btn btn-primary">Connect Google</a>
+            <a href="/unlink/google" class="btn btn-danger">Unlink Google</a>
+        </div>
+        <hr>
+        <!-- FACEBOOK INFORMATION -->
+        <div class="row">
+            <h3><span class="fa fa-facebook"></span> Facebook</h3>
+            <p><strong>EMAIL/USERNAME:</strong> {{ user.fb_name }} - {{ user.fb_email }}</p>
+            <p><strong>PASS/ID:</strong> {{ user.fb_id }}</p>
+            <p><strong>TOKEN:</strong> {{ user.fb_token }}</p>
+            <a href="/connect/facebook" class="btn btn-primary">Connect Facebook</a>
+            <a href="/unlink/facebook" class="btn btn-danger">Unlink Facebook</a>
+        </div>
+        <hr>
+    </div>
+
+</body>
+<script>
+    let token = '{{token}}';
+    localStorage.setItem('token', token);
+    sessionStorage.token = '{{ token }}';
+    //==========================================
+    function getRequest(url, func) {
+        const xhr = new XMLHttpRequest();
+        xhr.responseJSON = null;
+
+        xhr.open('GET', url, true);
+
+        if (sessionStorage.token) {
+            xhr.setRequestHeader('Authorization', 'JWT '.concat(sessionStorage.token));
+        }
+          console.log(xhr);
+
+        xhr.addEventListener('load', function () {
+            var result;
+            console.log(xhr.responseText);
+            if (xhr.status == 200) {
+                result = xhr.responseJSON = JSON.parse(xhr.responseText);
+            } else {
+                result = {};
+            }
+
+            func(xhr.status, result);
+        });
+
+        xhr.send();
+        return xhr;
+    }
+    function getSecret () {
+        console.log('Call getSecret');
+        getRequest('/secret', function (status, response) {
+            document.getElementById("secretMsg").innerHTML = response.secretMsg;
+            console.log(status);
+            console.log(response);
+        })
+    }
+
+</script>
+
+</html>
