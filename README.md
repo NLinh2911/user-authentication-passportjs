@@ -14,7 +14,7 @@
 ## User_account table in Postgres
 
 ```sql
-    CREATE TABLE user_account(user_id serial PRIMARY KEY, email TEXT UNIQUE, pass TEXT, github_id TEXT UNIQUE, github_username TEXT UNIQUE, github_token TEXT, google_id TEXT UNIQUE, google_email TEXT UNIQUE, google_token TEXT,  fb_id TEXT UNIQUE, fb_name TEXT, fb_email TEXT, fb_token TEXT);
+    CREATE TABLE user_account_passport(user_id serial PRIMARY KEY, email TEXT UNIQUE, pass TEXT, github_id TEXT UNIQUE, github_username TEXT UNIQUE, github_token TEXT, google_id TEXT UNIQUE, google_email TEXT UNIQUE, google_token TEXT,  fb_id TEXT UNIQUE, fb_name TEXT, fb_email TEXT, fb_token TEXT);
 ```
 
 * Local accounts require at least username/email and password
